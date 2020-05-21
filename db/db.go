@@ -8,30 +8,30 @@ import (
 )
 
 type DbConfig struct {
-	user     string
-	password string
-	host     string
-	port     string
-	name     string
+	User     string
+	Password string
+	Host     string
+	Port     string
+	Name     string
 }
 
 func (c DbConfig) ConnectString(passwordOverride string) string {
-	password := c.password
+	password := c.Password
 	if passwordOverride != "" {
 		password = passwordOverride
 	}
 	connectTemplate := "%s:%s@(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local"
-	connectString := fmt.Sprintf(connectTemplate, c.user, password, c.host, c.port, c.name)
+	connectString := fmt.Sprintf(connectTemplate, c.User, password, c.Host, c.Port, c.Name)
 	return connectString
 }
 
 func ReadDbConfig(defaults DbConfig) DbConfig {
 	return DbConfig{
-		user:     utils.GetEnvOrDefault("DB_USER", defaults.user),
-		password: utils.GetEnvOrDefault("DB_PASSWORD", defaults.password),
-		host:     utils.GetEnvOrDefault("DB_HOST", defaults.host),
-		port:     utils.GetEnvOrDefault("DB_PORT", defaults.port),
-		name:     utils.GetEnvOrDefault("DB_NAME", defaults.name),
+		User:     utils.GetEnvOrDefault("DB_USER", defaults.User),
+		Password: utils.GetEnvOrDefault("DB_PASSWORD", defaults.Password),
+		Host:     utils.GetEnvOrDefault("DB_HOST", defaults.Host),
+		Port:     utils.GetEnvOrDefault("DB_PORT", defaults.Port),
+		Name:     utils.GetEnvOrDefault("DB_NAME", defaults.Name),
 	}
 }
 
