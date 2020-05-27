@@ -15,24 +15,29 @@ type Response struct {
 func JsonResponse(w http.ResponseWriter, f func() (interface{}, error)) {
 	encoder := json.NewEncoder(w)
 	data, err := f()
+	if err := encoder.Encode(WrapResponse(err, data)); err != nil {
+		println(err.Error())
+	}
+}
+
+func WrapResponse(err error, data interface{}) ConventionalMarshaller {
 	var response Response
 	if err != nil {
 		response = Response{Message: err.Error()}
 	} else {
 		response = Response{Message: "OK", Items: data}
 	}
-	if err := encoder.Encode(conventionalMarshaller{response}); err != nil {
-		println(err.Error())
-	}
+	marshaller := ConventionalMarshaller{response}
+	return marshaller
 }
 
 var keyMatchRegex = regexp.MustCompile(`\"(\w+)\":`)
 
-type conventionalMarshaller struct {
+type ConventionalMarshaller struct {
 	Value interface{}
 }
 
-func (m conventionalMarshaller) MarshalJSON() ([]byte, error) {
+func (m ConventionalMarshaller) MarshalJSON() ([]byte, error) {
 	marshalled, err := json.Marshal(m.Value)
 
 	converted := keyMatchRegex.ReplaceAllFunc(
