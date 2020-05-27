@@ -15,12 +15,12 @@ type Response struct {
 func JsonResponse(w http.ResponseWriter, f func() (interface{}, error)) {
 	encoder := json.NewEncoder(w)
 	data, err := f()
-	if err := encoder.Encode(WrapResponse(err, data)); err != nil {
+	if err := encoder.Encode(WrapResponse(data, err)); err != nil {
 		println(err.Error())
 	}
 }
 
-func WrapResponse(err error, data interface{}) ConventionalMarshaller {
+func WrapResponse(data interface{}, err error) ConventionalMarshaller {
 	var response Response
 	if err != nil {
 		response = Response{Message: err.Error()}
