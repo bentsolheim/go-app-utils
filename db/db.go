@@ -20,7 +20,7 @@ func (c DbConfig) ConnectString(passwordOverride string) string {
 	if passwordOverride != "" {
 		password = passwordOverride
 	}
-	connectTemplate := "%s:%s@(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local"
+	connectTemplate := "%s:%s@(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local&multiStatements=true"
 	connectString := fmt.Sprintf(connectTemplate, c.User, password, c.Host, c.Port, c.Name)
 	return connectString
 }
