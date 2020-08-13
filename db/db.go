@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/bentsolheim/go-app-utils/utils"
-	"github.com/pkg/errors"
+	"github.com/palantir/stacktrace"
 )
 
 type DbConfig struct {
@@ -39,10 +39,10 @@ func ConnectToDb(c DbConfig) (*sql.DB, error) {
 
 	db, err := sql.Open("mysql", c.ConnectString(""))
 	if err != nil {
-		return nil, fmt.Errorf("unable to connect to database (%s): %v", c.ConnectString("***"), err)
+		return nil, stacktrace.Propagate(err, "unable to connect to database (%s): %v", c.ConnectString("***"))
 	}
 	if err := db.Ping(); err != nil {
-		return nil, errors.Wrap(err, "error while verifying database connection")
+		return nil, stacktrace.Propagate(err, "error while verifying database connection")
 	}
 
 	return db, nil
